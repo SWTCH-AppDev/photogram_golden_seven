@@ -4,7 +4,15 @@ class PicturesController < ApplicationController
   end
   
   def create_row
-    render("pic_templates/added_row.html.erb")
+    
+    p = Photo.new
+    p.source = params["the_source"]
+    p.caption = params["the_caption"]
+    p.save
+    
+    @photo_count = Photo.count
+    
+    redirect_to("/photos")
   end
   
   def index
@@ -14,8 +22,6 @@ class PicturesController < ApplicationController
   end
   
   def show
-    # Parameters: {"the_id"=>"20"}
-    
     visited_id = params["the_id"]
     
     p = Photo.find(visited_id)
@@ -28,14 +34,44 @@ class PicturesController < ApplicationController
   end
   
   def edit_form
+
+    edited_id = params["an_id"]
+    
+    p = Photo.find(edited_id)
+    
+    @the_caption = p.caption
+    
+    @the_image_url = p.source
+    
+    @the_image_id = p.id
+    
     render("pic_templates/prefilled_form.html.erb")
   end
   
   def update_row
-    render("pic_templates/modified_row.html.erb")
+    updated_id = params["some_id"]
+    
+    @updated_id = updated_id
+    
+    p = Photo.find(updated_id)
+    
+    p.source = params["the_source"]
+    
+    p.caption = params["the_caption"]
+    
+    p.save
+    
+    redirect_to("/photos/#{@updated_id}")
   end
   
   def destroy_row
-    render("pic_templates/removed_row.html.erb")
+    
+    deleted_id = params["toast_id"]
+    
+    p = Photo.find(deleted_id)
+    
+    p.destroy
+    
+    redirect_to("/photos")
   end
 end
